@@ -1,5 +1,7 @@
 # Rook
 
+<img width="1672" height="941" alt="ChatGPT Image Jun 1, 2026, 10_29_04 PM" src="https://github.com/user-attachments/assets/15d285bc-4310-4690-b2cb-f325b43ba0eb" />
+
 **Rook** is a standalone, autonomous security agent for vulnerability research,
 bug hunting and source-code auditing. It is a single Go executable built on the
 [ChatBotKit Go SDK](https://github.com/chatbotkit/go-sdk), with a library of
@@ -68,14 +70,14 @@ Rook loads a `.env` file automatically if present (see `.env.example`).
 
 ### Flags
 
-| Flag | Default | Description |
-| ---- | ------- | ----------- |
-| `--model` | `qwen-3.6-plus` | Model the agent reasons with |
-| `--max-iterations` | `40` | Maximum agent iterations before a forced stop |
-| `--scope` | — | Authorization boundary (hosts, repos, paths) |
-| `--scope-file` | — | Read the authorization scope from a file |
-| `-v`, `--verbose` | `false` | Stream the agent's reasoning tokens to stdout |
-| `-V`, `--version` | — | Print version and exit |
+| Flag               | Default         | Description                                   |
+| ------------------ | --------------- | --------------------------------------------- |
+| `--model`          | `qwen-3.6-plus` | Model the agent reasons with                  |
+| `--max-iterations` | `40`            | Maximum agent iterations before a forced stop |
+| `--scope`          | —               | Authorization boundary (hosts, repos, paths)  |
+| `--scope-file`     | —               | Read the authorization scope from a file      |
+| `-v`, `--verbose`  | `false`         | Stream the agent's reasoning tokens to stdout |
+| `-V`, `--version`  | —               | Print version and exit                        |
 
 The agent's findings stream to **stderr**; with `--verbose`, reasoning tokens
 stream to **stdout**. The final report is delivered as the agent's response —

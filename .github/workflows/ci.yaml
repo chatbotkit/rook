@@ -35,7 +35,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version: 'stable'
 
       # Float to the newest go-sdk. The committed go.mod already pins a working
       # published version, so this only bumps to anything newer on main.
@@ -86,7 +86,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version: 'stable'
 
       - name: Update go-sdk to latest
         run: |
