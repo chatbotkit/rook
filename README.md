@@ -1,5 +1,7 @@
 # Rook
 
+<img width="1672" height="941" alt="ChatGPT Image Jun 1, 2026, 10_29_04 PM" src="https://github.com/user-attachments/assets/15d285bc-4310-4690-b2cb-f325b43ba0eb" />
+
 **Rook** is a standalone, autonomous security agent for vulnerability research,
 bug hunting and source-code auditing. It is a single Go executable built on the
 [ChatBotKit Go SDK](https://github.com/chatbotkit/go-sdk), with a library of
