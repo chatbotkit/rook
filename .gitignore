@@ -1,0 +1,18 @@
+# Binary
+/rook
+/rook.exe
+
+# Release artifacts
+/dist/
+
+# Go workspace — local development only
+go.work
+go.work.sum
+
+# IDE
+.idea/
+.vscode/
+
+# Local environment
+.env
+.env.local
