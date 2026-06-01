@@ -5,7 +5,7 @@
 **Rook** is a standalone, autonomous security agent for vulnerability research,
 bug hunting and source-code auditing. It is a single Go executable built on the
 [ChatBotKit Go SDK](https://github.com/chatbotkit/go-sdk), with a library of
-security skills embedded directly into the binary — no external files, no setup
+security skills embedded directly into the binary - no external files, no setup
 beyond an API key.
 
 Give Rook a target and a scope, and it works through the problem the way a
@@ -16,11 +16,48 @@ written report.
 > against systems, code and services you own or are explicitly authorized to
 > test. Always pass an explicit `--scope`.
 
+## Why Rook?
+
+Security work happens in awkward places - a hardened bastion, an air-gapped
+network, a throwaway cloud VM, a CI runner, someone else's laptop during an
+engagement. Rook is built for exactly those:
+
+- **One single executable.** Everything - the agent loop, the tools, and the
+  entire skill library - is compiled into one binary via Go's `embed`. There is
+  no runtime to install, no interpreter, no `node_modules`, no virtualenv, no
+  config files to ship alongside it. Download one file, `chmod +x`, run.
+- **Portable everywhere.** Statically linked (`CGO_ENABLED=0`) and
+  cross-compiled for Linux, macOS and Windows on both amd64 and arm64. The same
+  tool drops onto an Apple-silicon laptop, an x86 server, or an ARM box with no
+  changes. Nothing to match against the host's libraries or OS version.
+- **Nothing to fetch at runtime.** Because the skills are baked in, Rook works
+  in locked-down or offline environments where you can't `pip install` or pull
+  containers. Its only external dependency is the ChatBotKit API (and your key).
+- **The hard parts run as a service.** This is the real reason Rook feels so
+  light. The AI agent harness - model orchestration, the reasoning and
+  tool-execution loop, skill handling, scaling and reliability - runs as a
+  managed service on ChatBotKit, built and maintained by a dedicated team of
+  engineers who do only this. The binary doesn't reimplement any of that
+  complexity; it embeds the skills and streams the conversation. So the agent
+  itself stays small and focused on the task at hand, and you inherit harness
+  improvements without shipping a new build.
+- **Trivial to distribute and audit.** A single artifact with a published
+  checksum is easy to vet, copy onto a target box, version-pin, and remove
+  cleanly afterwards - important when you're operating inside someone else's
+  scope.
+- **Purpose-built, not a general chatbot.** Rook ships as a focused
+  vulnerability-research and bug-hunting agent: it knows the methodology, the
+  bug classes, and the reporting discipline out of the box, and stays within
+  the authorization boundary you give it.
+
+In short: the value isn't just "an AI security agent" - it's an AI security
+agent you can carry anywhere as **one file** and run with **zero setup**.
+
 ## Features
 
 - **Single self-contained binary.** The skill library is compiled into the
   executable via Go's `embed`, so it ships and runs as one file.
-- **Autonomous agent loop.** Built on the Go SDK's `agent.ExecuteWithTools` —
+- **Autonomous agent loop.** Built on the Go SDK's `agent.ExecuteWithTools` -
   the agent plans, acts, tracks progress and exits on its own, bounded by
   `--max-iterations`.
 - **Built-in tools.** File read/write/edit and sandboxed shell execution via
@@ -50,6 +87,43 @@ Or clone and build with the provided `Makefile`:
 make build      # → ./rook
 ```
 
+## Authentication
+
+Rook talks to the ChatBotKit API, so it needs an API token supplied via
+`CHATBOTKIT_API_SECRET`.
+
+1. **Create a ChatBotKit account** at [chatbotkit.com](https://chatbotkit.com)
+   or [console.cbk.ai](https://console.cbk.ai).
+2. **Create an API token** from the Tokens page
+   ([chatbotkit.com/tokens](https://chatbotkit.com/tokens)) and set it as
+   `CHATBOTKIT_API_SECRET` (export it, or put it in a `.env` file).
+
+### Recommended: run under a sub-account
+
+For better **isolation, cost control and observability**, we suggest running
+Rook under a dedicated **sub-account** rather than your main account - each
+engagement, tool or user then gets its own usage, billing and logs. For a
+sub-account that is fully dedicated to Rook, a **standard token is enough**.
+
+### Recommended: use a scoped token
+
+We also recommend a **scoped token**, which limits the token to specific
+ChatBotKit API routes (principle of least privilege), so a leaked key can't
+touch the rest of your account. This matters less for a fully dedicated
+sub-account, but it is good practice everywhere.
+
+Rook runs **statelessly**, so it only needs the stateless completion route.
+When creating the token, set its `allowedRoutes` to:
+
+```yaml
+allowedRoutes:
+  - conversation/complete
+```
+
+Route patterns omit the `/v1/` prefix. See
+[How to Create Scoped API Tokens](https://chatbotkit.com/tutorials/how-to-create-scoped-api-tokens-for-restricted-access)
+for the full guide.
+
 ## Usage
 
 ```bash
@@ -74,41 +148,41 @@ Rook loads a `.env` file automatically if present (see `.env.example`).
 | ------------------ | --------------- | --------------------------------------------- |
 | `--model`          | `qwen-3.6-plus` | Model the agent reasons with                  |
 | `--max-iterations` | `40`            | Maximum agent iterations before a forced stop |
-| `--scope`          | —               | Authorization boundary (hosts, repos, paths)  |
-| `--scope-file`     | —               | Read the authorization scope from a file      |
+| `--scope`          | -               | Authorization boundary (hosts, repos, paths)  |
+| `--scope-file`     | -               | Read the authorization scope from a file      |
 | `-v`, `--verbose`  | `false`         | Stream the agent's reasoning tokens to stdout |
-| `-V`, `--version`  | —               | Print version and exit                        |
+| `-V`, `--version`  | -               | Print version and exit                        |
 
 The agent's findings stream to **stderr**; with `--verbose`, reasoning tokens
-stream to **stdout**. The final report is delivered as the agent's response —
+stream to **stdout**. The final report is delivered as the agent's response -
 Rook does not write files on its own. If you want the report (or any other
 artifact) saved to disk, ask for it in the task and the agent will use its
 `write` tool.
 
 ## Embedded Skills
 
-Rook ships with **51 security skills** — each a `SKILL.md` playbook under
+Rook ships with **51 security skills** - each a `SKILL.md` playbook under
 [`skills/`](skills/), embedded into the binary at build time and offered to the
 agent as it works. They cover, roughly:
 
-- **Methodology & mindset** — `bug-bounty`, `bb-methodology`, `redteam-mindset`,
+- **Methodology & mindset** - `bug-bounty`, `bb-methodology`, `redteam-mindset`,
   `bb-local-toolkit`, `hunt-dispatch`.
-- **Web/API vulnerability hunting** (24 `hunt-*` classes + `security-arsenal`) —
+- **Web/API vulnerability hunting** (24 `hunt-*` classes + `security-arsenal`) -
   IDOR, SQLi, XSS, SSRF, RCE, SSTI, XXE, CSRF, OAuth, SAML, GraphQL, auth/MFA
   bypass, ATO, business logic, cache poisoning, HTTP smuggling, file upload,
   API misconfig, race conditions, and more.
-- **Enterprise & infrastructure attack chains** — `m365-entra-attack`,
+- **Enterprise & infrastructure attack chains** - `m365-entra-attack`,
   `okta-attack`, `cloud-iam-deep`, `vmware-vcenter-attack`,
   `enterprise-vpn-attack`, `hunt-sharepoint`, `hunt-aspnet`, `hunt-ntlm-info`,
   `apk-redteam-pipeline`, `supply-chain-attack-recon`.
-- **Recon & OSINT** — `web2-recon`, `offensive-osint`, `osint-methodology`,
+- **Recon & OSINT** - `web2-recon`, `offensive-osint`, `osint-methodology`,
   `hunt-subdomain`.
-- **Web3** — `web3-audit`, `meme-coin-audit`.
-- **Triage, reporting & hygiene** — `triage-validation`, `bugcrowd-reporting`,
+- **Web3** - `web3-audit`, `meme-coin-audit`.
+- **Triage, reporting & hygiene** - `triage-validation`, `bugcrowd-reporting`,
   `report-writing`, `redteam-report-template`, `evidence-hygiene`,
   `mid-engagement-ir-detection`.
 
-These skills are sourced from the **claude-bughunter** project — see
+These skills are sourced from the **claude-bughunter** project - see
 [Credits](#credits).
 
 ### Adding a skill
@@ -126,7 +200,7 @@ description: One sentence the model uses to decide when to apply this skill.
 Step-by-step guidance...
 ```
 
-Rebuild the binary — the new skill is picked up automatically by the `embed`
+Rebuild the binary - the new skill is picked up automatically by the `embed`
 directive. No registration code required.
 
 ## How it works
@@ -140,8 +214,8 @@ embed.go          //go:embed skills  →  the embedded skill library
 skills/           SKILL.md playbooks compiled into the binary
 ```
 
-The default model and the agent's system prompt (backstory) live in one place —
-[`internal/config/config.go`](internal/config/config.go) — so they can be tuned
+The default model and the agent's system prompt (backstory) live in one place -
+[`internal/config/config.go`](internal/config/config.go) - so they can be tuned
 without touching the CLI or the agent loop.
 
 At startup Rook loads the embedded skills with `agent.LoadSkillsFromFS`,
@@ -192,5 +266,5 @@ author and the bug-bounty community whose disclosed reports informed them.
 
 ## License
 
-Rook itself is MIT licensed — see [LICENSE](LICENSE). Bundled third-party
+Rook itself is MIT licensed - see [LICENSE](LICENSE). Bundled third-party
 content retains its original license; see [NOTICE.md](NOTICE.md).

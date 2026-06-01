@@ -11,8 +11,8 @@ multi-platform binaries and publishes them as a GitHub Release.
 ### go-sdk resolution
 
 The committed `go.mod` pins a **tagged release** of the Go SDK (e.g.
-`github.com/chatbotkit/go-sdk v0.1.0`), so every build — clean clone, CI,
-release, and `go install` — uses exactly that version. Builds are reproducible;
+`github.com/chatbotkit/go-sdk v0.1.0`), so every build - clean clone, CI,
+release, and `go install` - uses exactly that version. Builds are reproducible;
 no floating fetch step is involved.
 
 For development against a local checkout of the SDK, a **gitignored `go.work`**

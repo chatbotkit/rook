@@ -41,7 +41,7 @@ func main() {
 	showVersion := flags.BoolP("version", "V", false, "print version and exit")
 
 	flags.Usage = func() {
-		fmt.Fprintf(os.Stderr, "rook — autonomous security research agent\n\n")
+		fmt.Fprintf(os.Stderr, "rook - autonomous security research agent\n\n")
 		fmt.Fprintf(os.Stderr, "Usage:\n  rook [flags] <task>\n  rook version\n\nFlags:\n")
 		flags.PrintDefaults()
 	}

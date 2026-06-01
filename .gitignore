@@ -5,7 +5,7 @@
 # Release artifacts
 /dist/
 
-# Go workspace — local development only
+# Go workspace - local development only
 go.work
 go.work.sum
 

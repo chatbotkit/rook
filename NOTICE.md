@@ -3,7 +3,7 @@
 Rook bundles third-party content under the terms below. This file is provided to
 satisfy the attribution requirements of those licenses.
 
-## Embedded skill library — `skills/`
+## Embedded skill library - `skills/`
 
 The contents of the [`skills/`](skills/) directory are sourced from the
 **claude-bughunter** project by Sachin Sharma:

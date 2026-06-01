@@ -53,7 +53,7 @@ func Run(ctx context.Context, cfg Config) (int, error) {
 
 	fmt.Fprintf(os.Stderr, "Loaded %d embedded skill(s):\n", len(skills))
 	for _, s := range skills {
-		fmt.Fprintf(os.Stderr, "  • %s — %s\n", s.Name, s.Description)
+		fmt.Fprintf(os.Stderr, "  • %s - %s\n", s.Name, s.Description)
 	}
 	fmt.Fprintln(os.Stderr)
 
