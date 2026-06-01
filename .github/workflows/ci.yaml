@@ -37,13 +37,6 @@ jobs:
         with:
           go-version: 'stable'
 
-      # Float to the newest go-sdk. The committed go.mod already pins a working
-      # published version, so this only bumps to anything newer on main.
-      - name: Update go-sdk to latest
-        run: |
-          go get github.com/chatbotkit/go-sdk@latest
-          go mod tidy
-
       - name: Vet
         run: go vet ./...
 
@@ -87,11 +80,6 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: 'stable'
-
-      - name: Update go-sdk to latest
-        run: |
-          go get github.com/chatbotkit/go-sdk@latest
-          go mod tidy
 
       - name: Cross-compile
         env:

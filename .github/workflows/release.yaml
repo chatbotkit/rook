@@ -35,13 +35,6 @@ jobs:
         with:
           go-version: 'stable'
 
-      # Float to the newest go-sdk before cutting the release. The committed
-      # go.mod already pins a working published version; this bumps to latest.
-      - name: Update go-sdk to latest
-        run: |
-          go get github.com/chatbotkit/go-sdk@latest
-          go mod tidy
-
       - name: Build binary
         env:
           GOOS: ${{ matrix.goos }}

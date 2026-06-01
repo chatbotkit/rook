@@ -10,16 +10,21 @@ multi-platform binaries and publishes them as a GitHub Release.
 
 ### go-sdk resolution
 
-The committed `go.mod` pins a **published** version of the Go SDK (a
-pseudo-version of `github.com/chatbotkit/go-sdk`), so the repository builds from
-a clean clone — and `go install` works — with no extra steps.
+The committed `go.mod` pins a **tagged release** of the Go SDK (e.g.
+`github.com/chatbotkit/go-sdk v0.1.0`), so every build — clean clone, CI,
+release, and `go install` — uses exactly that version. Builds are reproducible;
+no floating fetch step is involved.
 
 For development against a local checkout of the SDK, a **gitignored `go.work`**
 (created via `make workspace`) overrides the pinned module with the local copy.
 Because it is gitignored, it only affects local builds.
 
-The CI and release workflows run `go get github.com/chatbotkit/go-sdk@latest &&
-go mod tidy` before building so each build floats to the newest go-sdk.
+To move to a newer SDK, bump the pin explicitly and commit the result:
+
+```bash
+go get github.com/chatbotkit/go-sdk@v0.2.0   # run with go.work inactive
+go mod tidy
+```
 
 ## Version embedding
 
