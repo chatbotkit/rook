@@ -15,7 +15,7 @@ GOSDK ?= ../go-sdk
 
 workspace:
 	go work init . $(GOSDK)
-	@echo "go.work created — local builds now use $(GOSDK)"
+	@echo "go.work created - local builds now use $(GOSDK)"
 
 build:
 	@echo "Building $(CMD) ($(VERSION))..."

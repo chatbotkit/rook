@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - 'v*'
+  # Dispatched by tag-release.yaml at the new tag ref. Needed because tags
+  # pushed with GITHUB_TOKEN do not trigger the push-tags event above.
+  workflow_dispatch:
 
 permissions:
   contents: write
