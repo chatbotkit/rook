@@ -35,14 +35,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
-
-      # Float to the newest go-sdk. The committed go.mod already pins a working
-      # published version, so this only bumps to anything newer on main.
-      - name: Update go-sdk to latest
-        run: |
-          go get github.com/chatbotkit/go-sdk@latest
-          go mod tidy
+          go-version: 'stable'
 
       - name: Vet
         run: go vet ./...
@@ -86,12 +79,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
-
-      - name: Update go-sdk to latest
-        run: |
-          go get github.com/chatbotkit/go-sdk@latest
-          go mod tidy
+          go-version: 'stable'
 
       - name: Cross-compile
         env:

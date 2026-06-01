@@ -33,14 +33,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
-
-      # Float to the newest go-sdk before cutting the release. The committed
-      # go.mod already pins a working published version; this bumps to latest.
-      - name: Update go-sdk to latest
-        run: |
-          go get github.com/chatbotkit/go-sdk@latest
-          go mod tidy
+          go-version: 'stable'
 
       - name: Build binary
         env:

@@ -70,14 +70,14 @@ Rook loads a `.env` file automatically if present (see `.env.example`).
 
 ### Flags
 
-| Flag | Default | Description |
-| ---- | ------- | ----------- |
-| `--model` | `qwen-3.6-plus` | Model the agent reasons with |
-| `--max-iterations` | `40` | Maximum agent iterations before a forced stop |
-| `--scope` | — | Authorization boundary (hosts, repos, paths) |
-| `--scope-file` | — | Read the authorization scope from a file |
-| `-v`, `--verbose` | `false` | Stream the agent's reasoning tokens to stdout |
-| `-V`, `--version` | — | Print version and exit |
+| Flag               | Default         | Description                                   |
+| ------------------ | --------------- | --------------------------------------------- |
+| `--model`          | `qwen-3.6-plus` | Model the agent reasons with                  |
+| `--max-iterations` | `40`            | Maximum agent iterations before a forced stop |
+| `--scope`          | —               | Authorization boundary (hosts, repos, paths)  |
+| `--scope-file`     | —               | Read the authorization scope from a file      |
+| `-v`, `--verbose`  | `false`         | Stream the agent's reasoning tokens to stdout |
+| `-V`, `--version`  | —               | Print version and exit                        |
 
 The agent's findings stream to **stderr**; with `--verbose`, reasoning tokens
 stream to **stdout**. The final report is delivered as the agent's response —
