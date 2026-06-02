@@ -16,6 +16,42 @@ written report.
 > against systems, code and services you own or are explicitly authorized to
 > test. Always pass an explicit `--scope`.
 
+## What can it do?
+
+A single binary, a plain-English task, and an explicit scope. Each example
+below is backed by Rook's built-in [skills](#embedded-skills):
+
+```bash
+# Source-code audit - injection, IDOR and broken access control
+rook --scope "repo: ./api, read-only, no network" \
+     "Audit ./api for SQL injection, IDOR and auth bypass"
+
+# Web app / API - SSRF in a URL-fetching feature (authorized target)
+rook --scope-file scope.txt \
+     "Test the link-preview endpoint on staging.example.com for SSRF to cloud metadata"
+
+# External recon & OSINT - map an organisation's attack surface
+rook --scope "domain: example.com + subdomains, passive recon only" \
+     "Map example.com's external surface: subdomains, exposed services and leaked secrets"
+
+# Cloud misconfiguration - read-only review
+rook --scope "AWS, describe/list only, no mutations" \
+     "Check for public S3 buckets, over-permissive IAM roles and IMDS exposure"
+
+# Smart-contract audit
+rook --scope "repo: ./contracts" \
+     "Audit the Solidity contracts for reentrancy, access-control and oracle bugs"
+
+# Supply chain - dependencies and CI exposure
+rook --scope "repo: ., read-only" \
+     "Review dependencies for known CVEs and flag supply-chain risks"
+```
+
+Rook also covers OAuth/SAML/JWT flaws, file-upload and SSTI/RCE chains,
+business-logic and race conditions, HTTP request smuggling, and enterprise
+identity/infrastructure attack surfaces (M365/Entra, Okta, VPN appliances,
+vCenter, SharePoint) - see the full [skill library](#embedded-skills).
+
 ## Why Rook?
 
 Security work happens in awkward places - a hardened bastion, an air-gapped
@@ -69,11 +105,38 @@ agent you can carry anywhere as **one file** and run with **zero setup**.
 
 ## Install
 
-### From a release
+### From a release (recommended)
 
-Download the archive for your platform from the
-[releases page](https://github.com/chatbotkit/rook/releases), extract it, and
-put `rook` on your `PATH`.
+Prebuilt, self-contained binaries are published for every release on the
+[releases page](https://github.com/chatbotkit/rook/releases), for Linux, macOS
+and Windows on both amd64 and arm64. Each archive contains a single `rook`
+binary (plus README and LICENSE), and a `checksums.txt` is published alongside.
+
+Pick the archive for your platform - e.g. `rook-v0.1.0-linux-amd64.tar.gz` - then
+download, (optionally) verify, extract and put `rook` on your `PATH`:
+
+```bash
+VERSION=v0.1.0
+OS=linux       # linux | darwin | windows
+ARCH=amd64     # amd64 | arm64
+BASE="https://github.com/chatbotkit/rook/releases/download/${VERSION}"
+
+# download the archive and checksums
+curl -sSLO "${BASE}/rook-${VERSION}-${OS}-${ARCH}.tar.gz"
+curl -sSLO "${BASE}/checksums.txt"
+
+# verify (optional but recommended)
+sha256sum --ignore-missing -c checksums.txt
+
+# extract and install
+tar -xzf "rook-${VERSION}-${OS}-${ARCH}.tar.gz"
+sudo mv "rook-${VERSION}-${OS}-${ARCH}/rook" /usr/local/bin/rook
+
+rook version
+```
+
+On Windows, download `rook-<version>-windows-amd64.tar.gz`, extract it, and add
+`rook.exe` to a directory on your `PATH`.
 
 ### From source
 
@@ -147,7 +210,7 @@ Rook loads a `.env` file automatically if present (see `.env.example`).
 | Flag               | Default         | Description                                   |
 | ------------------ | --------------- | --------------------------------------------- |
 | `--model`          | `qwen-3.6-plus` | Model the agent reasons with                  |
-| `--max-iterations` | `40`            | Maximum agent iterations before a forced stop |
+| `--max-iterations` | `10000`         | Maximum agent iterations before a forced stop |
 | `--scope`          | -               | Authorization boundary (hosts, repos, paths)  |
 | `--scope-file`     | -               | Read the authorization scope from a file      |
 | `-v`, `--verbose`  | `false`         | Stream the agent's reasoning tokens to stdout |
