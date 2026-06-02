@@ -14,7 +14,7 @@ const DefaultModel = "qwen-3.6-plus"
 
 // DefaultMaxIterations bounds how many tool-using turns the agent may take
 // before it is forced to stop, when --max-iterations is not given.
-const DefaultMaxIterations = 40
+const DefaultMaxIterations = 10000
 
 // Backstory is Rook's system prompt. It is the single source of truth for the
 // agent's persona, operating rules and safety constraints. The %s verb is
