@@ -84,7 +84,7 @@ func Run(ctx context.Context, cfg Config) (int, error) {
 		Tools:         tools,
 		MaxIterations: cfg.MaxIterations,
 		Extensions: &types.ConversationCompleteRequestExtensions{
-			Features: []types.IndigoFeature{
+			Features: []types.CompleteFeature{
 				{
 					Name:    skillsFeature["name"].(string),
 					Options: skillsFeature["options"].(map[string]interface{}),
